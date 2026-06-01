@@ -7,11 +7,17 @@ function App() {
   useEffect(() => {
     async function getUsers() {
       try {
-        const res = await fetch('https://sv-exam-backend-production.up.railway.app/users')
-        const data = await res.json()
-        setUsers(data)
+        const url = `${import.meta.env.VITE_BACK_URL}/users`;
+
+        console.log('---check---');
+        console.log('my url is:', url);
+        
+
+        const res = await fetch(url);
+        const data = await res.json();
+        setUsers(data);
       } catch (err) {
-        console.log('Error:', err)
+        console.log('Error:', err);
       }
     }
 
