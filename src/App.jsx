@@ -9,10 +9,6 @@ function App() {
       try {
         const url = `${import.meta.env.VITE_BACK_URL}/users`;
 
-        console.log('---check---');
-        console.log('my url is:', url);
-        
-
         const res = await fetch(url);
         const data = await res.json();
         setUsers(data);
