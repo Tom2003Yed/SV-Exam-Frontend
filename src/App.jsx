@@ -23,7 +23,10 @@ function App() {
   return (
     <>
       {users.map(user => {
-        return <p key={user._id}>{user.name}</p>
+        return <p
+        key={user._id}
+        className='bg-green-300'
+        >{user.name}</p>
       })}
     </>
   )
