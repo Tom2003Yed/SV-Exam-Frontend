@@ -24,8 +24,8 @@ function AllMovies() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-neutral-900">All Movies</h1>
-      <p className="mt-1 mb-8 text-neutral-500">
+      <h1 className="text-2xl font-bold text-neutral-900 md:text-3xl">All Movies</h1>
+      <p className="mt-1 mb-6 text-neutral-500 md:mb-8">
         {movies.length} movies in your watchlist
       </p>
 
@@ -33,7 +33,7 @@ function AllMovies() {
         {movies.map((movie) => (
           <div
             key={movie._id}
-            className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm"
+            className="flex flex-col rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm md:p-6"
           >
             <div className="mb-3 flex items-start justify-between gap-3">
               <h2 className="text-xl font-bold text-neutral-900">{movie.title}</h2>
