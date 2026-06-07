@@ -1,30 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
+import NavBar from './components/NavBar'
+import AllMovies from './components/AllMovies'
+import AddMovie from './components/AddMovie'
+import SearchMovie from './components/SearchMovie'
+import { AppContext } from './AppContext'
 
 function App() {
-  const [movies, setMovies] = useState([])
-
-  useEffect(() => {
-    async function getMovies() {
-      try {
-        const url = `${import.meta.env.VITE_BACK_URL}/movies`;
-
-        const res = await fetch(url);
-        const data = await res.json();
-        setMovies(data);
-      } catch (err) {
-        console.log('Error:', err);
-      }
-    }
-
-    getMovies()
-  }, [])
+  const [movies, setMovies] = useState([]);
 
   const sendMessage = () => {
-    debugger;
     let message = 'תן לי מתכון לעוגת גבינה ';
     if (!message.trim()) return
-    fetch(`${import.meta.env.VITE_BACK_URL}/chat`, {
+    fetch(`${import.meta.env.VITE_BACK_URL}/movies/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,16 +28,7 @@ function App() {
       })
   }
 
-  const addMovie = async () => {
-    const res = await fetch(`${import.meta.env.VITE_BACK_URL}/movies`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: 'Inception', genre: 'Sci-Fi', description: 'Dream inside a dream' })
-    });
-    const newMovie = await res.json();
-    
-    setMovies((prevMovies) => [...prevMovies, newMovie]);
-  };
+  
   
   const updateMovie = async (id) => {
     const res = await fetch(`${import.meta.env.VITE_BACK_URL}/movies/${id}`, {
@@ -72,9 +52,17 @@ function App() {
   };
 
   return (
-    <>
-      <button onClick={addMovie} className="bg-blue-500 p-2 m-2 block">הוסף סרט בדיקה</button>
-      <hr />
+    <BrowserRouter>
+    <AppContext.Provider value={{ movies, setMovies }}>
+    <div className="flex min-h-screen">
+      <NavBar />
+
+      <main className="flex-1 bg-neutral-100 p-8">
+        <Routes>
+          <Route path="/" element={<AllMovies />} />
+          <Route path="/add-movie" element={<AddMovie />} />
+          <Route path="/search-movies" element={<SearchMovie />} />
+        </Routes>
 
       {movies.map(movie => {
         return (
@@ -88,7 +76,10 @@ function App() {
       
       <hr />
       <button onClick={() => sendMessage()}>לקבל מתכון עוגת גבינה בהערה</button>
-    </>
+      </main>
+    </div>
+    </AppContext.Provider>
+    </BrowserRouter>
   )
 }
 
