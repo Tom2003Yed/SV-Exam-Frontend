@@ -6,7 +6,8 @@ function AddMovie() {
   const [title, setTitle] = useState('')
   const [genre, setGenre] = useState('')
   const [description, setDescription] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -31,6 +32,7 @@ function AddMovie() {
       return
     }
 
+    setIsSubmitting(true)
     try {
       const res = await fetch(`${import.meta.env.VITE_BACK_URL}/movies`, {
         method: 'POST',
@@ -49,6 +51,8 @@ function AddMovie() {
     } catch (err) {
       console.log('Error:', err)
       alert('Error adding movie')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -61,7 +65,7 @@ function AddMovie() {
       return
     }
 
-    setIsLoading(true)
+    setIsGenerating(true)
     try {
       const res = await fetch(`${import.meta.env.VITE_BACK_URL}/movies/generate`, {
         method: 'POST',
@@ -83,7 +87,7 @@ function AddMovie() {
       console.log('Error:', err)
       alert(err.message || 'Error generating description')
     } finally {
-      setIsLoading(false)
+      setIsGenerating(false)
     }
   }
 
@@ -137,10 +141,10 @@ function AddMovie() {
           <button
             type="button"
             onClick={generateDescription}
-            disabled={isLoading}
+            disabled={isGenerating || isSubmitting}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white py-3 text-sm font-medium text-neutral-900 hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading ? (
+            {isGenerating ? (
               <>
                 <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -160,12 +164,25 @@ function AddMovie() {
 
           <button
             type="submit"
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-black py-3 text-sm font-medium text-white hover:bg-neutral-800"
+            disabled={isSubmitting || isGenerating}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-black py-3 text-sm font-medium text-white hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            Add Movie
+            {isSubmitting ? (
+              <>
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                LOADING
+              </>
+            ) : (
+              <>
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Add Movie
+              </>
+            )}
           </button>
         </div>
       </form>
