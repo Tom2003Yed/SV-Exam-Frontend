@@ -73,16 +73,10 @@ function AddMovie() {
         body: JSON.stringify({ title: trimmedTitle, genre: trimmedGenre }),
       })
 
-      const text = await res.text()
-      let data
-      try {
-        data = JSON.parse(text)
-      } catch {
-        throw new Error(text || 'Invalid response from server')
-      }
-
+      const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error generating description')
-      setDescription(data.description.slice(0, 200))
+
+      setDescription((data.description || '').slice(0, 200))
     } catch (err) {
       console.log('Error:', err)
       alert(err.message || 'Error generating description')
